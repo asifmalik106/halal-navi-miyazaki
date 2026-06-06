@@ -1,9 +1,29 @@
 {
-  "reference": { "name": "Miyazaki Station", "lat": 31.9290, "lng": 131.4395 },
+  "reference": {
+    "name": "株式会社ビジネス・アーキテクツ　宮崎支社",
+    "lat": 31.9155554,
+    "lng": 131.4291224
+  },
   "points": [
-    { "name": "Miyazaki Prefectural Government", "lat": 31.9111, "lng": 131.4239 },
-    { "name": "Aoshima Shrine", "lat": 31.7967, "lng": 131.4783 },
-    { "name": "Miyazaki Airport", "lat": 31.8772, "lng": 131.4486 },
-    { "name": "Heiwadai Park", "lat": 31.9486, "lng": 131.4197 }
+    {
+      "name": "アンビ",
+      "lat": 31.9082165,
+      "lng": 131.4264735
+    },
+    {
+      "name": "Aoshima Shrine",
+      "lat": 31.7967,
+      "lng": 131.4783
+    },
+    {
+      "name": "Miyazaki Airport",
+      "lat": 31.8772,
+      "lng": 131.4486
+    },
+    {
+      "name": "Heiwadai Park",
+      "lat": 31.9486,
+      "lng": 131.4197
+    }
   ]
 }
