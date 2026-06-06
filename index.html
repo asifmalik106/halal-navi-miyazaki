@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Driving distances</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Fonts: Fraunces (display) · Space Grotesk (body) · Space Mono (numbers) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper: #f4efe4;       /* warm off-white */
+    --paper-2: #ece5d6;     /* slightly deeper panel */
+    --card: #fbf8f1;
+    --ink: #1d1b16;         /* dark ink */
+    --ink-soft: #6b655a;    /* muted */
+    --line: #ddd4c2;        /* hairline */
+    --accent: #e2533b;      /* one strong accent (vermilion) */
+    --accent-ink: #fff;
+    --shadow: 0 1px 2px rgba(29,27,22,.06), 0 6px 20px rgba(29,27,22,.06);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---- Layout: side-by-side on desktop, stacked on mobile ---- */
+  .app {
+    display: grid;
+    grid-template-columns: minmax(320px, 380px) 1fr;
+    grid-template-rows: 100dvh;
+    height: 100dvh;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+  }
+  .map-wrap { position: relative; min-height: 0; }
+  #map { position: absolute; inset: 0; background: var(--paper-2); }
+
+  @media (max-width: 760px) {
+    .app {
+      grid-template-columns: 1fr;
+      grid-template-rows: 42dvh auto;
+      height: auto;
+      min-height: 100dvh;
+    }
+    .panel { border-right: none; border-top: 1px solid var(--line); order: 2; }
+    .map-wrap { order: 1; }
+  }
+
+  /* ---- Header ---- */
+  header {
+    padding: 22px 22px 16px;
+    border-bottom: 1px solid var(--line);
+    flex: 0 0 auto;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(26px, 4vw, 34px);
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -.01em;
+  }
+  .from {
+    margin: 12px 0 0;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .from .dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(226,83,59,.18);
+    flex: 0 0 auto;
+  }
+  .from b { color: var(--ink); font-weight: 700; }
+
+  /* ---- List ---- */
+  .list {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    padding: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 12px 12px;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    transition: background .14s ease, border-color .14s ease, transform .05s ease;
+  }
+  .row:hover { background: var(--card); border-color: var(--line); }
+  .row:active { transform: translateY(1px); }
+  .row.active {
+    background: var(--card);
+    border-color: var(--accent);
+    box-shadow: var(--shadow);
+  }
+  .row .rank {
+    font-family: "Space Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .row.active .rank { color: var(--accent); font-weight: 700; }
+  .row .name {
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .row .metrics {
+    text-align: right;
+    font-family: "Space Mono", monospace;
+    white-space: nowrap;
+  }
+  .row .km { font-size: 14px; font-weight: 700; }
+  .row .min { font-size: 11.5px; color: var(--ink-soft); }
+
+  /* ---- Footer / timestamp ---- */
+  .foot {
+    flex: 0 0 auto;
+    padding: 12px 22px;
+    border-top: 1px solid var(--line);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    font-family: "Space Mono", monospace;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .foot a { color: var(--ink-soft); }
+
+  /* ---- States ---- */
+  .state {
+    padding: 40px 22px;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .state.error {
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    margin: 16px;
+  }
+  .state.error b { color: var(--accent); }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--line);
+    border-top-color: var(--accent);
+    display: inline-block;
+    vertical-align: -4px;
+    margin-right: 8px;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- Leaflet popup restyle ---- */
+  .leaflet-container { font-family: "Space Grotesk", sans-serif; background: var(--paper-2); }
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    background: var(--card);
+  }
+  .leaflet-popup-content { margin: 12px 14px; }
+  .pop-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .pop-metrics { font-family: "Space Mono", monospace; font-size: 12.5px; color: var(--ink-soft); }
+  .pop-metrics b { color: var(--accent); }
+
+  /* Custom markers */
+  .pin {
+    width: 30px; height: 30px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: var(--accent);
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(29,27,22,.35);
+  }
+  .dot-marker {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2.5px solid var(--paper);
+    box-shadow: 0 1px 4px rgba(29,27,22,.4);
+    transition: transform .12s ease, background .12s ease;
+  }
+  .dot-marker.active { background: var(--accent); transform: scale(1.45); }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="panel">
+    <header>
+      <p class="eyebrow">Driving distances</p>
+      <h1 id="title">Getting around</h1>
+      <p class="from" id="from" hidden>
+        <span class="dot"></span>
+        <span>from <b id="ref-name"></b></span>
+      </p>
+    </header>
+    <div class="list" id="list">
+      <div class="state" id="loading"><span class="spinner"></span>Loading map data…</div>
+    </div>
+    <div class="foot" id="foot" hidden>
+      <span id="updated"></span>
+      <span>Leaflet · OSM</span>
+    </div>
+  </section>
+
+  <div class="map-wrap">
+    <div id="map"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKGg="
+  crossorigin=""></script>
+<script>
+  // ===================================================================
+  // CONFIG — paste the RAW URL of your Gist's data.json here.
+  // It looks like:
+  //   https://gist.githubusercontent.com/<user>/<gist_id>/raw/data.json
+  // No tokens or API keys belong in this file — it is public.
+  // ===================================================================
+  const CONFIG = {
+    GIST_RAW_URL: "https://gist.githubusercontent.com/asifmalik106/35707800ed79455f9d576fb179e7ca4b/raw/data.json",
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  // Map setup
+  const map = L.map("map", { zoomControl: true, scrollWheelZoom: true });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+  map.setView([31.91, 131.42], 11); // sensible default before data loads
+
+  const refIcon = L.divIcon({
+    className: "",
+    html: '<div class="pin"></div>',
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -28],
+  });
+  function dotIcon(active) {
+    return L.divIcon({
+      className: "",
+      html: `<div class="dot-marker${active ? " active" : ""}"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+      popupAnchor: [0, -10],
+    });
+  }
+
+  const esc = (s) =>
+    String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+    );
+  const fmtKm = (v) => (v == null ? "—" : v.toFixed(1));
+  const fmtMin = (v) => (v == null ? "—" : Math.round(v));
+
+  const markers = []; // index-aligned with sorted points
+  let activeIdx = -1;
+
+  function setActive(idx) {
+    if (activeIdx === idx) return;
+    // reset previous
+    if (activeIdx >= 0 && markers[activeIdx]) {
+      markers[activeIdx].setIcon(dotIcon(false));
+      document.querySelector(`.row[data-idx="${activeIdx}"]`)?.classList.remove("active");
+    }
+    activeIdx = idx;
+    if (idx < 0) return;
+    markers[idx]?.setIcon(dotIcon(true));
+    const row = document.querySelector(`.row[data-idx="${idx}"]`);
+    if (row) {
+      row.classList.add("active");
+      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }
+
+  function focusPoint(idx, pt) {
+    setActive(idx);
+    map.flyTo([pt.lat, pt.lng], Math.max(map.getZoom(), 14), { duration: 0.5 });
+    markers[idx]?.openPopup();
+  }
+
+  function showError(message, detail) {
+    $("loading")?.remove();
+    const list = $("list");
+    list.innerHTML =
+      `<div class="state error"><b>Couldn't load the map data.</b><br>${esc(message)}` +
+      (detail ? `<br><br><span style="font-size:12px">${esc(detail)}</span>` : "") +
+      `</div>`;
+  }
+
+  async function load() {
+    let data;
+    try {
+      // cache-bust lightly so editors see fresh data sooner; CDN still helps viewers
+      const res = await fetch(CONFIG.GIST_RAW_URL, { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      data = await res.json();
+    } catch (err) {
+      showError("The data file could not be fetched.", err.message);
+      return;
+    }
+
+    if (!data || !data.reference || !Array.isArray(data.points)) {
+      showError("The data file is missing or has an unexpected shape.",
+        "Has build.js been run against the Gist yet?");
+      return;
+    }
+
+    const ref = data.reference;
+
+    // Title + reference label
+    $("title").textContent = ref.name ? `Around ${ref.name}` : "Driving distances";
+    document.title = ref.name ? `Driving distances · ${ref.name}` : "Driving distances";
+    $("ref-name").textContent = ref.name || "the reference point";
+    $("from").hidden = false;
+
+    // Reference marker
+    const refMarker = L.marker([ref.lat, ref.lng], { icon: refIcon, zIndexOffset: 1000 })
+      .addTo(map)
+      .bindPopup(`<div class="pop-name">${esc(ref.name || "Reference")}</div>
+                  <div class="pop-metrics">Reference point</div>`);
+
+    const bounds = L.latLngBounds([[ref.lat, ref.lng]]);
+
+    // Sort nearest-first by km (nulls last)
+    const sorted = data.points
+      .map((p) => ({ ...p }))
+      .sort((a, b) => {
+        if (a.km == null) return 1;
+        if (b.km == null) return -1;
+        return a.km - b.km;
+      });
+
+    const list = $("list");
+    list.innerHTML = "";
+
+    sorted.forEach((pt, idx) => {
+      const m = L.marker([pt.lat, pt.lng], { icon: dotIcon(false) })
+        .addTo(map)
+        .bindPopup(
+          `<div class="pop-name">${esc(pt.name)}</div>
+           <div class="pop-metrics"><b>${fmtKm(pt.km)} km</b> · ${fmtMin(pt.min)} min driving</div>`
+        );
+      m.on("popupopen", () => setActive(idx));
+      markers[idx] = m;
+      bounds.extend([pt.lat, pt.lng]);
+
+      const row = document.createElement("button");
+      row.className = "row";
+      row.type = "button";
+      row.dataset.idx = idx;
+      row.innerHTML =
+        `<span class="rank">${idx + 1}</span>
+         <span class="name">${esc(pt.name)}</span>
+         <span class="metrics"><span class="km">${fmtKm(pt.km)} km</span><br><span class="min">${fmtMin(pt.min)} min</span></span>`;
+      row.addEventListener("click", () => focusPoint(idx, pt));
+      list.appendChild(row);
+    });
+
+    if (sorted.length === 0) {
+      list.innerHTML = `<div class="state">No points yet. Add some to points.json and run build.js.</div>`;
+    }
+
+    // Fit to all markers
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+
+    // Timestamp
+    if (data.updated) {
+      const d = new Date(data.updated);
+      const when = isNaN(d) ? data.updated
+        : d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+      $("updated").textContent = `Updated ${when}`;
+    }
+    $("foot").hidden = false;
+  }
+
+  load();
+</script>
+</body>
+</html>

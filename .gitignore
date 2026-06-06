@@ -1,0 +1,12 @@
+# Local secrets — never commit
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+
+# Claude Code local settings
+.claude/
