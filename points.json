@@ -2,28 +2,37 @@
   "reference": {
     "name": "株式会社ビジネス・アーキテクツ　宮崎支社",
     "lat": 31.9155554,
-    "lng": 131.4291224
+    "lng": 131.4291224,
+    "gmap": "https://www.google.com/maps/search/?api=1&query=31.9155554,131.4291224"
   },
   "points": [
     {
       "name": "アンビ",
       "lat": 31.9082165,
-      "lng": 131.4264735
+      "lng": 131.4264735,
+      "gmap": "https://www.google.com/maps/search/?api=1&query=31.9082165,131.4264735",
+      "route": "https://www.google.com/maps/dir/?api=1&origin=31.9082165,131.4264735&destination=31.9155554,131.4291224&travelmode=driving"
     },
     {
       "name": "Aoshima Shrine",
       "lat": 31.7967,
-      "lng": 131.4783
+      "lng": 131.4783,
+      "gmap": "https://www.google.com/maps/search/?api=1&query=31.7967,131.4783",
+      "route": "https://www.google.com/maps/dir/?api=1&origin=31.7967,131.4783&destination=31.9155554,131.4291224&travelmode=driving"
     },
     {
       "name": "Miyazaki Airport",
       "lat": 31.8772,
-      "lng": 131.4486
+      "lng": 131.4486,
+      "gmap": "https://www.google.com/maps/search/?api=1&query=31.8772,131.4486",
+      "route": "https://www.google.com/maps/dir/?api=1&origin=31.8772,131.4486&destination=31.9155554,131.4291224&travelmode=driving"
     },
     {
       "name": "Heiwadai Park",
       "lat": 31.9486,
-      "lng": 131.4197
+      "lng": 131.4197,
+      "gmap": "https://www.google.com/maps/search/?api=1&query=31.9486,131.4197",
+      "route": "https://www.google.com/maps/dir/?api=1&origin=31.9486,131.4197&destination=31.9155554,131.4291224&travelmode=driving"
     }
   ]
 }

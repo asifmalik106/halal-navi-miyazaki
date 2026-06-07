@@ -141,11 +141,37 @@
     text-align: center;
   }
   .row.active .rank { color: var(--accent); font-weight: 700; }
+  .row .body { display: flex; flex-direction: column; min-width: 0; }
   .row .name {
     font-weight: 500;
     font-size: 15px;
     line-height: 1.25;
     overflow-wrap: anywhere;
+  }
+  .row .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 7px;
+  }
+  .row .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    letter-spacing: .02em;
+    text-decoration: none;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 9px;
+    transition: background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .row .links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--card);
   }
   .row .metrics {
     text-align: right;
@@ -205,6 +231,17 @@
   .pop-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
   .pop-metrics { font-family: "Space Mono", monospace; font-size: 12.5px; color: var(--ink-soft); }
   .pop-metrics b { color: var(--accent); }
+  .pop-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pop-links a {
+    font-size: 11px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+  .pop-links a:hover { color: var(--accent); border-color: var(--accent); }
 
   /* Custom markers */
   .pin {
@@ -312,6 +349,20 @@
   const fmtKm = (v) => (v == null ? "—" : v.toFixed(1));
   const fmtMin = (v) => (v == null ? "—" : Math.round(v));
 
+  // Build the two Google Maps links for a point (skips any that are missing).
+  function linksHtml(pt, cls) {
+    const out = [];
+    if (pt.gmap)
+      out.push(
+        `<a href="${esc(pt.gmap)}" target="_blank" rel="noopener">📍 Open in Maps</a>`
+      );
+    if (pt.route)
+      out.push(
+        `<a href="${esc(pt.route)}" target="_blank" rel="noopener">🚗 Route</a>`
+      );
+    return out.length ? `<div class="${cls}">${out.join("")}</div>` : "";
+  }
+
   const markers = []; // index-aligned with sorted points
   let activeIdx = -1;
 
@@ -377,7 +428,8 @@
     const refMarker = L.marker([ref.lat, ref.lng], { icon: refIcon, zIndexOffset: 1000 })
       .addTo(map)
       .bindPopup(`<div class="pop-name">${esc(ref.name || "Reference")}</div>
-                  <div class="pop-metrics">Reference point</div>`);
+                  <div class="pop-metrics">Reference point</div>
+                  ${linksHtml(ref, "pop-links")}`);
 
     const bounds = L.latLngBounds([[ref.lat, ref.lng]]);
 
@@ -398,21 +450,37 @@
         .addTo(map)
         .bindPopup(
           `<div class="pop-name">${esc(pt.name)}</div>
-           <div class="pop-metrics"><b>${fmtKm(pt.km)} km</b> · ${fmtMin(pt.min)} min driving</div>`
+           <div class="pop-metrics"><b>${fmtKm(pt.km)} km</b> · ${fmtMin(pt.min)} min driving</div>
+           ${linksHtml(pt, "pop-links")}`
         );
       m.on("popupopen", () => setActive(idx));
       markers[idx] = m;
       bounds.extend([pt.lat, pt.lng]);
 
-      const row = document.createElement("button");
+      const row = document.createElement("div");
       row.className = "row";
-      row.type = "button";
       row.dataset.idx = idx;
+      row.setAttribute("role", "button");
+      row.tabIndex = 0;
       row.innerHTML =
         `<span class="rank">${idx + 1}</span>
-         <span class="name">${esc(pt.name)}</span>
+         <span class="body">
+           <span class="name">${esc(pt.name)}</span>
+           ${linksHtml(pt, "links")}
+         </span>
          <span class="metrics"><span class="km">${fmtKm(pt.km)} km</span><br><span class="min">${fmtMin(pt.min)} min</span></span>`;
-      row.addEventListener("click", () => focusPoint(idx, pt));
+      // Focus the marker on row click, but let the Maps/Route links open normally.
+      row.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return;
+        focusPoint(idx, pt);
+      });
+      row.addEventListener("keydown", (e) => {
+        if (e.target.closest("a")) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          focusPoint(idx, pt);
+        }
+      });
       list.appendChild(row);
     });
 

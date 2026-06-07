@@ -203,6 +203,8 @@ async function main() {
     const km = distances[i];
     const durSec = durations[i];
     return {
+      // ...p carries through any manual fields you set in points.json,
+      // including `gmap` (Google Maps link) and `route` (directions link).
       ...p,
       km: km == null ? null : Math.round(km * 10) / 10, // 1 decimal place
       min: durSec == null ? null : Math.round(durSec / 60), // whole minutes
@@ -211,7 +213,7 @@ async function main() {
 
   const output = {
     updated: new Date().toISOString(),
-    reference,
+    reference, // passes through reference.gmap if you set one
     points: outPoints,
   };
 

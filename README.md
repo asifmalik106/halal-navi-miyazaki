@@ -72,13 +72,33 @@ Edit `points.json`:
 
 ```json
 {
-  "reference": { "name": "My office", "lat": 35.6809, "lng": 139.7673 },
+  "reference": {
+    "name": "My office",
+    "lat": 35.6809,
+    "lng": 139.7673,
+    "gmap": "https://maps.google.com/?q=..."
+  },
   "points": [
-    { "name": "Place A", "lat": 35.7100, "lng": 139.7700 },
-    { "name": "Place B", "lat": 35.6500, "lng": 139.8000 }
+    {
+      "name": "Place A",
+      "lat": 35.7100,
+      "lng": 139.7700,
+      "gmap": "https://maps.google.com/?q=...",
+      "route": "https://www.google.com/maps/dir/?api=1&origin=...&destination=...&travelmode=driving"
+    }
   ]
 }
 ```
+
+Required per item: `name`, `lat`, `lng`. Optional, **added manually by you**:
+
+- `gmap` — a Google Maps link to that place (shown as "📍 Open in Maps").
+- `route` — a Google Maps directions link (shown as "🚗 Route"). Points only.
+
+`build.js` does **not** generate these — it passes whatever you write straight
+through to `data.json`. Use any URL you like (a coordinate pin, or a specific
+business listing). Leave a field out and that link simply won't render.
+The driving `km` / `min` are still computed automatically by `build.js`.
 
 Then run:
 
