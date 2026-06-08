@@ -7,32 +7,46 @@
   },
   "points": [
     {
-      "name": "アンビ",
-      "lat": 31.9082165,
-      "lng": 131.4264735,
-      "gmap": "https://www.google.com/maps/search/?api=1&query=31.9082165,131.4264735",
-      "route": "https://www.google.com/maps/dir/?api=1&origin=31.9082165,131.4264735&destination=31.9155554,131.4291224&travelmode=driving"
+      "name": "アンビ　レストラン",
+      "lat": 31.9082535,
+      "lng": 131.4258787,
+      "gmap": "https://www.google.com/maps/place/ASIAN+DINING%26BAR+ANNBI/@31.9082535,131.4258787,19z/data=!3m1!4b1!4m6!3m5!1s0x3538b77f5d33b009:0x6037367e76db3f45!8m2!3d31.9082524!4d131.4265224!16s%2Fg%2F11zj6z68p0?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/zo1W8wBYroHbRgnc6"
     },
     {
-      "name": "Aoshima Shrine",
-      "lat": 31.7967,
-      "lng": 131.4783,
-      "gmap": "https://www.google.com/maps/search/?api=1&query=31.7967,131.4783",
-      "route": "https://www.google.com/maps/dir/?api=1&origin=31.7967,131.4783&destination=31.9155554,131.4291224&travelmode=driving"
+      "name": "インド料理専門店 ムーナ 大淀店",
+      "lat": 31.8965779,
+      "lng": 131.4217046,
+      "gmap": "https://www.google.com/maps/place/Muna+Indian+Resturant/@31.8965779,131.4217046,19.12z/data=!4m6!3m5!1s0x3538b79fec9c53b9:0x7253974e8f973f3d!8m2!3d31.8965199!4d131.4221437!16s%2Fg%2F1pv610w30?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/nTsckpUc2R3ruA7z8"
     },
     {
-      "name": "Miyazaki Airport",
-      "lat": 31.8772,
-      "lng": 131.4486,
-      "gmap": "https://www.google.com/maps/search/?api=1&query=31.8772,131.4486",
-      "route": "https://www.google.com/maps/dir/?api=1&origin=31.8772,131.4486&destination=31.9155554,131.4291224&travelmode=driving"
+      "name": "ロータス アジアン ファミリー レストラン",
+      "lat": 31.9195714,
+      "lng": 131.4083994,
+      "gmap": "https://www.google.com/maps/place/%E3%83%AD%E3%83%BC%E3%82%BF%E3%82%B9+%7B+LOTUS+%7D+%E3%82%A2%E3%82%B8%E3%82%A2%E3%83%B3+%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC+%E3%83%AC%E3%82%B9%E3%83%88%E3%83%A9%E3%83%B3/@31.9195714,131.4083994,18z/data=!4m22!1m15!4m14!1m6!1m2!1s0x3538b73d506a1d73:0xcc754d2e7408be6c!2z5qCq5byP5Lya56S-IOODk-OCuOODjeOCue-9peOCouODvOOCreODhuOCr-ODhCDlrq7ltI7jgqrjg5XjgqPjgrnjgIHjgJI4ODAtMDgwNiBNaXlhemFraSwgSGlyb3NoaW1hLCAyIENob21l4oiSNeKIkjE2IDdG!2m2!1d131.4291717!2d31.9156167!1m6!1m2!1s0x3538b77f5d33b009:0x6037367e76db3f45!2zQVNJQU4gRElOSU5HJkJBUiBBTk5CSeOAgeOAkjg4MC0wODAzIE1peWF6YWtpLCBBc2FoaSwgMSBDaG9tZeKIkjXiiJIxMg!2m2!1d131.4265182!2d31.9081905!3m5!1s0x3538b70074264381:0x5eb3b40ea732460d!8m2!3d31.9195775!4d131.4098236!16s%2Fg%2F11wtd_6vql?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/8ZenbYZtK59EWHRp7"
     },
     {
-      "name": "Heiwadai Park",
-      "lat": 31.9486,
-      "lng": 131.4197,
-      "gmap": "https://www.google.com/maps/search/?api=1&query=31.9486,131.4197",
-      "route": "https://www.google.com/maps/dir/?api=1&origin=31.9486,131.4197&destination=31.9155554,131.4291224&travelmode=driving"
+      "name": "LAKSA",
+      "lat": 31.9152171,
+      "lng": 131.4260139,
+      "gmap": "https://www.google.com/maps/place/laksa/@31.9152171,131.4260139,21z/data=!4m6!3m5!1s0x3538b7d885904adf:0x1728f47e222afdae!8m2!3d31.9152079!4d131.42588!16s%2Fg%2F11gy719trr?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/3uuhWVjedMUrFeGdA"
+    },
+    {
+      "name": "本格インド料理 ナマステ カリカ",
+      "lat": 31.9062825,
+      "lng": 131.4468087,
+      "gmap": "https://www.google.com/maps/place/NAMASTE+KALIKA+MAIN+BRANCH/@31.9062825,131.4468087,21z/data=!3m1!5s0x3538b9ddf6ec866d:0x88b1de290399d7de!4m10!1m2!2m1!1sHalal!3m6!1s0x3538b90e88d2245f:0x4067faf0817fb976!8m2!3d31.906405!4d131.4470903!15sCgVIYWxhbFoHIgVoYWxhbJIBEWluZGlhbl9yZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVU5TZDNGaWEwWjNFQUXgAQD6AQQIABA2!16s%2Fg%2F11s5xg9s70?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/vdeb1QZUNsKxqfFS6"
+    },
+    {
+      "name": "インド料理 ビスヌ イオンモール宮崎店",
+      "lat": 31.9228364,
+      "lng": 131.4549673,
+      "gmap": "https://www.google.com/maps/place/Bishnu+(Miyazaki+Aeon+Mall)/@31.9228364,131.4549673,18z/data=!3m2!4b1!5s0x3538ba1de298b4dd:0x486cece483599fb5!4m6!3m5!1s0x3538bbe97bdf56af:0xba5e6433bebb03b6!8m2!3d31.9228347!4d131.4559515!16s%2Fg%2F11pb51_gb8?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D",
+      "route": "https://maps.app.goo.gl/h4xgxViXJmGFhYA26"
     }
   ]
 }
